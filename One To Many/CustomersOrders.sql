@@ -78,3 +78,12 @@ LEFT JOIN orders
     ON customers.id = orders.customer_id
 GROUP BY customers.id
 ORDER BY total_spent;
+
+-- Right Join
+SELECT * FROM customers
+RIGHT JOIN orders
+    ON customers.id = orders.customer_id;
+
+INSERT INTO orders (order_date, amount, customer_id)
+VALUES ('2017/11/05',23.45,45),
+       ('2017/04/26',777.77,109);
