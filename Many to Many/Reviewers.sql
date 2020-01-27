@@ -42,5 +42,84 @@ INSERT INTO series (title, released_year, genre) VALUES
         series_id INT,
         reviewer_id INT,
         FOREIGN KEY(series_id) REFERENCES series(id),
-        FOREIGN KEY(reviewer_id) REFERENCES reviewers(id),
-    )
+        FOREIGN KEY(reviewer_id) REFERENCES reviewers(id)
+    );
+
+    INSERT INTO reviews(series_id, reviewer_id, rating) VALUES
+    (1,1,8.0),(1,2,7.5),(1,3,8.5),(1,4,7.7),(1,5,8.9),
+    (2,1,8.1),(2,4,6.0),(2,3,8.0),(2,6,8.4),(2,5,9.9),
+    (3,1,7.0),(3,6,7.5),(3,4,8.0),(3,3,7.1),(3,5,8.0),
+    (4,1,7.5),(4,3,7.8),(4,4,8.3),(4,2,7.6),(4,5,8.5),
+    (5,1,9.5),(5,3,9.0),(5,4,9.1),(5,2,9.3),(5,5,9.9),
+    (6,2,6.5),(6,3,7.8),(6,4,8.8),(6,2,8.4),(6,5,9.1),
+    (7,2,9.1),(7,5,9.7),
+    (8,4,8.5),(8,2,7.8),(8,6,8.8),(8,5,9.3),
+    (9,2,5.5),(9,3,6.8),(9,4,5.8),(9,6,4.3),(9,5,4.5),
+    (10,5,9.9),
+    (13,3,8.0),(13,4,7.2),
+    (14,2,8.5),(14,3,8.9),(14,4,8.9);
+
+    -- Challenge 1
+    SELECT title, rating 
+    FROM series
+    JOIN reviews
+      ON series.id = reviews.series_id
+    ORDER BY title;
+
+    -- Challenge 2
+    SELECT 
+        title, 
+        AVG(rating) AS avg_rating
+    FROM series
+    JOIN reviews
+        ON series.id = reviews.series_id
+    GROUP BY series.id
+    ORDER BY avg_rating;
+
+    -- Challenge 3
+    SELECT first_name, last_name, rating
+    FROM reviewers
+    JOIN reviews
+        ON reviewers.id = reviews.reviewer_id;
+
+    -- Challenge 4
+    SELECT title AS unreviewed_series, rating
+    FROM series
+    LEFT JOIN reviews 
+        ON series.id = reviews.series_id
+    WHERE rating IS NULL;
+
+    -- Challenge 5
+    SELECT genre, AVG(rating) AS avg_rating
+    FROM series 
+    JOIN reviews
+        ON series.id = reviews.series_id
+    GROUP BY genre;
+
+    -- Challenge 6
+    SELECT 
+        first_name, 
+        last_name, 
+        IFNULL(COUNT(rating), 0) AS COUNT, 
+        IFNULL(MIN(rating), 0.0) AS MIN, 
+        IFNULL(MAX(rating), 0.0) AS MAX,
+        ROUND(IFNULL(AVG(rating), 0), 2) AS AVG,
+        CASE
+            WHEN COUNT(rating) > 0 THEN 'ACTIVE'
+            ELSE 'INACTIVE'
+        END AS STATUS
+    FROM reviewers
+    LEFT JOIN reviews
+        ON reviewers.id = reviews.reviewer_id
+    GROUP BY reviewers.id;
+
+    -- Challenge 7
+    SELECT title, rating, CONCAT(first_name, ' ', last_name) AS reviewer
+    FROM reviews
+    JOIN series
+        ON series.id = reviews.series_id
+    JOIN reviewers
+        ON reviewers.id = reviews.reviewer_id
+    ORDER BY title; 
+
+    
