@@ -22,6 +22,27 @@ CREATE TABLE comments (
     FOREIGN KEY(photo_id) REFERENCES photos(id)
 );
 
+CREATE TABLE likes (
+    user_id INT NOT NULL,
+    photo_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(photo_id) REFERENCES photos(id),
+    PRIMARY KEY(user_id, photo_id)
+    -- Makes it so each like requires a unique combination of user_id and photo_id
+    -- ie - same user can't like a photo more than one
+);
+
+CREATE TABLE follows (
+    follower_id INT NOT NULL,
+    followee_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY(follower_id) REFERENCES users(id),
+    FOREIGN KEY(followee_id) REFERENCES users(id),
+    PRIMARY KEY(follower_id, followee_id)
+    -- Makes it so each follow requires a unique combination of follower_id and followee_id
+);
+
 INSERT INTO users (username) VALUES
 ('Bob'),
 ('Jane'),
@@ -36,6 +57,20 @@ INSERT INTO comments (comment_text, user_id, photo_id) VALUES
 ('Hi There', 1, 2 ),
 ('Goodbye', 3, 2 ),
 ('Beunos Dias', 2, 1 );
+
+INSERT INTO likes (user_id, photo_id) VALUES 
+(1,1),
+(2,1),
+(1,2),
+(1,3),
+(3,3);
+
+INSERT INTO follows (follower_id, followee_id) VALUES
+(1,2),
+(1,3),
+(3,1),
+(2,3);
+
 
 SELECT username, photos.image_url, photos.created_at
 FROM photos
